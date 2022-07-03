@@ -1,0 +1,42 @@
+# docker jupyter setting
+docker run -d -it --name jupyter -p 8891:8888 --mount type=bind,source=/src001/docker_jupyter,target=/root python:3.8.1
+docker start jupyter
+docker exec -it jupyter /bin/bash
+
+# jupyter install(in the container)
+pip install --upgrate pip
+pip install jupyter
+
+# make config
+jupyter notebook --generate-config-y
+
+# the result will like...
+>>> Writing default config to:/
+
+ipython
+>> from notebook.auth import passwd
+>> passwd()
+# Enter password:
+# please save the output password
+>> quit()
+
+apt-get update
+apt-get install nano
+
+nano /root/.jupyter/jupyter_notebook_config.py
+
+c = get_config()
+c.NotebookApp.ip='localhost'
+c.NotebookApp.open_browser=False
+c.NotebookApp.password='' # saved password
+c.NotebookApp.password_required=True
+c.NotebookApp.port=8888
+c.NotebookApp.iopub_data_rate_limit=1.0e10
+c.NotebookApp.terminado_settings={'shell_command': ['/bin/bash']}
+
+# Ctrl+x, y, Enter >> save nano file
+
+# start jupyter notebook
+jupyter notebook --ip 0.0.0.0 --allow-root
+
+
